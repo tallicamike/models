@@ -137,7 +137,7 @@ def _create_losses(input_queue, create_model_fn):
 
 def train(create_tensor_dict_fn, create_model_fn, train_config, master, task,
           num_clones, worker_replicas, clone_on_cpu, ps_tasks, worker_job_name,
-          is_chief, train_dir):
+          is_chief, train_dir, args_num_steps=None):
   """Training function for detection models.
 
   Args:
@@ -279,6 +279,9 @@ def train(create_tensor_dict_fn, create_model_fn, train_config, master, task,
     keep_checkpoint_every_n_hours = train_config.keep_checkpoint_every_n_hours
     saver = tf.train.Saver(
         keep_checkpoint_every_n_hours=keep_checkpoint_every_n_hours)
+
+    if args_num_steps and args_num_steps != 0: #take steps from command-line
+        train_config.num_steps = args_num_steps
 
     slim.learning.train(
         train_tensor,
